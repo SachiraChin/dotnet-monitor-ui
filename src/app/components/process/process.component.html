@@ -1,6 +1,6 @@
 <mat-card class="process-name">pid: {{pid}}</mat-card>
 <mat-accordion>
-  <mat-expansion-panel>
+  <mat-expansion-panel expanded="true">
     <mat-expansion-panel-header>
       <mat-panel-title>
         dump
@@ -12,7 +12,7 @@
     </mat-expansion-panel-header>
     <app-dump [pid]="pid"></app-dump>
   </mat-expansion-panel>
-  <mat-expansion-panel expanded="true">
+  <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
         gcdump
