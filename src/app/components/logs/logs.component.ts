@@ -119,6 +119,12 @@ export class LogsComponent implements OnInit {
 
   stream(): void {
     this.form.disable();
+    this.jsonLogs = new BehaviorSubject<LogModel[]>([]);
+    this.logLevels = [];
+    this.eventIds = [];
+    this.categories = [];
+    this.jsonLogsDataSource.data = [];
+
     this.streamSubscription = this.logsService.getLogs(this.pid, +this.form.get('level').value, +this.form.get('durationSeconds').value)
       .subscribe(e => {
         this.jsonLogs.next(e);
