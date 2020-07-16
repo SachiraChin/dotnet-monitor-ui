@@ -1,0 +1,23 @@
+<div [formGroup]="form">
+  <mat-form-field appearance="standard" floatLabel="always">
+    <mat-label>Duration in seconds</mat-label>
+    <input matInput type="number" formControlName="durationSeconds">
+  </mat-form-field>
+  <br>
+  <mat-form-field appearance="standard" floatLabel="always">
+    <mat-label>Trace profile</mat-label>
+    <mat-select multiple formControlName="profile">
+      <mat-option [value]="1">CPU</mat-option>
+      <mat-option [value]="2">HTTP</mat-option>
+      <mat-option [value]="4">Logs</mat-option>
+      <mat-option [value]="8">Metrics</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+  <mat-form-field appearance="standard" floatLabel="always">
+    <mat-label>Metrics interval in seconds</mat-label>
+    <input matInput type="number" formControlName="metricsIntervalSeconds">
+  </mat-form-field>
+  <br />
+  <button mat-raised-button color="primary" (click)="download()">Download</button>
+</div>

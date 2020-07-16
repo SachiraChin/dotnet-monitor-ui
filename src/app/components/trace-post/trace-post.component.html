@@ -1,0 +1,84 @@
+<div [formGroup]="form">
+  <mat-form-field appearance="standard" floatLabel="always">
+    <mat-label>Duration in seconds</mat-label>
+    <input matInput type="number" formControlName="durationSeconds">
+  </mat-form-field>
+  <br>
+  <mat-form-field appearance="standard" floatLabel="always">
+    <mat-label>Request rundown</mat-label>
+    <mat-select formControlName="requestRundown">
+      <mat-option [value]="true">Yes</mat-option>
+      <mat-option [value]="false">No</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br />
+  <mat-form-field appearance="standard" floatLabel="always">
+    <mat-label>Buffer size in MB</mat-label>
+    <input matInput type="number" formControlName="bufferSizeInMB">
+  </mat-form-field>
+  <br>
+  Providers <button mat-button color="primary" (click)="addProvider()">Add Provider</button>
+  <table mat-table [dataSource]="providersDataSource" class="full-width" formArrayName="providers">
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let element; let index = index" [formGroupName]="index">
+        <input matInput placeholder="Microsoft-Windows-DotNETRuntime" formControlName="name" >
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="keywords">
+      <th class="keywords-cell" mat-header-cell *matHeaderCellDef> Keywords </th>
+      <td class="keywords-cell" mat-cell *matCellDef="let element; let index = index" [formGroupName]="index">
+        <mat-select formControlName="keywords">
+          <mat-option [value]="0">None</mat-option>
+          <mat-option [value]="-1">All</mat-option>
+          <mat-option [value]="4503599627370496">Audit Failure</mat-option>
+          <mat-option [value]="9007199254740992">Audit Success</mat-option>
+          <mat-option [value]="4503599627370496">Correlation Hint</mat-option>
+          <mat-option [value]="36028797018963968">Event Log Classic</mat-option>
+          <mat-option [value]="562949953421312">Microsoft Telemetry</mat-option>
+          <mat-option [value]="2251799813685248">Sqm</mat-option>
+          <mat-option [value]="562949953421312">Wdi Context</mat-option>
+          <mat-option [value]="1125899906842624">Wdi Diagnostic</mat-option>
+        </mat-select>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="eventLevel">
+      <th class="keywords-cell" class="center-text button-cell" mat-header-cell *matHeaderCellDef> Event Level </th>
+      <td class="keywords-cell" mat-cell *matCellDef="let element; let index = index" [formGroupName]="index">
+        <mat-select formControlName="eventLevel">
+          <mat-option [value]="0">Log Always</mat-option>
+          <mat-option [value]="1">Critical</mat-option>
+          <mat-option [value]="2">Error</mat-option>
+          <mat-option [value]="3">Warning</mat-option>
+          <mat-option [value]="4">Informational</mat-option>
+          <mat-option [value]="5">Verbose</mat-option>
+        </mat-select>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="arguments">
+      <th class="center-text button-cell" mat-header-cell *matHeaderCellDef> Arguments </th>
+      <td class="center-text button-cell" mat-cell *matCellDef="let element; let index = index" [formGroupName]="index">
+        <textarea matInput placeholder="[{'key': '', 'value': ''}]" formControlName="arguments">
+
+        </textarea>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="options">
+      <th class="delete-provider" mat-header-cell *matHeaderCellDef></th>
+      <td class="delete-provider" mat-cell *matCellDef="let element; let index = index">
+        <button mat-raised-button color="warn" (click)="deleteProvider(index)" [disabled]="form.disabled">Delete</button>
+      </td>
+    </ng-container>
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <br>
+  <div>
+    <button class="spinner-container" mat-raised-button color="primary" (click)="download()" [disabled]="form.disabled">Download</button>
+    <mat-spinner class="spinner-container" mode="indeterminate" diameter="35" *ngIf="form.disabled"></mat-spinner>
+  </div>
+</div>

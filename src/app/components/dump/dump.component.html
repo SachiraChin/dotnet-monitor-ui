@@ -1,0 +1,13 @@
+<div [formGroup]="form">
+  <mat-form-field appearance="standard" floatLabel="always">
+    <mat-label>Type</mat-label>
+    <mat-select formControlName="type">
+      <mat-option [value]="1">Full</mat-option>
+      <mat-option [value]="2">Mini</mat-option>
+      <mat-option [value]="3">WithHeap</mat-option>
+      <mat-option [value]="4">Triage</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br />
+  <button mat-raised-button color="primary" (click)="download()">Download</button>
+</div>

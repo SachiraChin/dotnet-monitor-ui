@@ -1,0 +1,63 @@
+<mat-card class="process-name">pid: {{pid}}</mat-card>
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        dump
+      </mat-panel-title>
+      <mat-panel-description>
+        <div class="spacer"></div>
+        GET /dump/{{pid}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-dump [pid]="pid"></app-dump>
+  </mat-expansion-panel>
+  <mat-expansion-panel expanded="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        gcdump
+      </mat-panel-title>
+      <mat-panel-description>
+        <div class="spacer"></div>
+        GET /gcdump/{{pid}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-gc-dump [pid]="pid"></app-gc-dump>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        trace (GET)
+      </mat-panel-title>
+      <mat-panel-description>
+        <div class="spacer"></div>
+        GET /traces/{{pid}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-trace-get [pid]="pid"></app-trace-get>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        trace (POST)
+      </mat-panel-title>
+      <mat-panel-description>
+        <div class="spacer"></div>
+        POST /traces/{{pid}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-trace-post [pid]="pid"></app-trace-post>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        logs
+      </mat-panel-title>
+      <mat-panel-description>
+        <div class="spacer"></div>
+        GET /logs/{{pid}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-logs [pid]="pid"></app-logs>
+  </mat-expansion-panel>
+</mat-accordion>

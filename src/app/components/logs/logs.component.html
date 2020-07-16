@@ -1,0 +1,92 @@
+<div [formGroup]="form">
+  <mat-form-field appearance="standard" floatLabel="always">
+    <mat-label>Duration in seconds</mat-label>
+    <input matInput type="number" formControlName="durationSeconds">
+  </mat-form-field>
+  <br>
+  <mat-form-field appearance="standard" floatLabel="always">
+    <mat-label>Level</mat-label>
+    <mat-select formControlName="level">
+      <mat-option [value]="0">Trace</mat-option>
+      <mat-option [value]="1">Debug</mat-option>
+      <mat-option [value]="2">Information</mat-option>
+      <mat-option [value]="3">Warning</mat-option>
+      <mat-option [value]="4">Error</mat-option>
+      <mat-option [value]="5">Critical</mat-option>
+      <mat-option [value]="6">None</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+  <div>
+    <button class="spinner-container" mat-raised-button color="primary" (click)="stream()" [disabled]="form.disabled">Stream</button>
+    <button class="spinner-container" mat-raised-button color="warn" (click)="stopStream()" *ngIf="form.disabled">Stop</button>
+    <mat-spinner class="spinner-container" mode="indeterminate" diameter="35" *ngIf="form.disabled"></mat-spinner>
+    <span>Count: {{this.jsonLogsDataSource.data.length}}</span>
+  </div>
+  <div class="clear-float"></div>
+</div>
+<div [formGroup]="tableFiltersForm">
+
+  <mat-form-field appearance="standard" floatLabel="always" class="display-columns-select">
+    <mat-label>Display columns</mat-label>
+    <mat-select formControlName="displayedColumns" multiple>
+      <mat-option *ngFor="let e of allDisplayedColumns" [value]="e">{{e}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br />
+  <mat-form-field appearance="standard" floatLabel="always" class="log-levels-select">
+    <mat-label>Log levels</mat-label>
+    <mat-select formControlName="logLevels" multiple>
+      <mat-option *ngFor="let e of logLevels" [value]="e">{{e}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="standard" floatLabel="always" class="log-levels-select">
+    <mat-label>Event Ids</mat-label>
+    <mat-select formControlName="eventIds" multiple>
+      <mat-option *ngFor="let e of eventIds" [value]="e">{{e}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="standard" floatLabel="always" class="display-columns-select">
+    <mat-label>Categories</mat-label>
+    <mat-select formControlName="categories" multiple>
+      <mat-option *ngFor="let e of categories" [value]="e">{{e}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+  <mat-form-field appearance="standard" floatLabel="always">
+    <mat-label>Search text</mat-label>
+    <input matInput formControlName="searchText">
+  </mat-form-field>
+  <div class="table-container">
+    <table mat-table [dataSource]="jsonLogsDataSource">
+      <ng-container matColumnDef="LogLevel">
+        <th class="table-cell" mat-header-cell *matHeaderCellDef> LogLevel </th>
+        <td class="table-cell" mat-cell *matCellDef="let element"> {{element.LogLevel}} </td>
+      </ng-container>
+      <ng-container matColumnDef="EventId">
+        <th class="table-cell" mat-header-cell *matHeaderCellDef> EventId </th>
+        <td class="table-cell" mat-cell *matCellDef="let element"> {{element.EventId}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Category">
+        <th class="table-cell" mat-header-cell *matHeaderCellDef> Category </th>
+        <td class="table-cell" mat-cell *matCellDef="let element"> {{element.Category}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Message">
+        <th class="table-cell" mat-header-cell *matHeaderCellDef> Message </th>
+        <td class="table-cell" mat-cell *matCellDef="let element"> {{element.Message}} </td>
+      </ng-container>
+      <ng-container matColumnDef="Scopes">
+        <th class="table-cell" mat-header-cell *matHeaderCellDef> Scopes </th>
+        <td class="table-cell" mat-cell *matCellDef="let element" [innerHTML]="objectToText(element.Scopes)"></td>
+      </ng-container>
+      <ng-container matColumnDef="Arguments">
+        <th class="table-cell" mat-header-cell *matHeaderCellDef> Arguments </th>
+        <td class="table-cell" mat-cell *matCellDef="let element" [innerHTML]="objectToText(element.Arguments)"></td>
+      </ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</div>
