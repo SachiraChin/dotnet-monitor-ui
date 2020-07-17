@@ -45,8 +45,11 @@ export class TraceService {
     const blob = new Blob([data.body], { type });
     const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
+    link.href = url;
     link.download = filename;
     link.click();
+
+    URL.revokeObjectURL(url);
   }
 }
