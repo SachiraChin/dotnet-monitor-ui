@@ -1,4 +1,4 @@
-export interface LogModel {
+export class LogModel {
   LogLevel: string;
   EventId: string;
   Category: string;

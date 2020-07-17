@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Process } from 'src/app/models/process';
+import { ProcessModel } from 'src/app/models/process-model';
 import { ConfigurationService } from 'src/app/services/configuration-service';
 import { DumpService } from 'src/app/services/dump-service';
 import { TraceService } from 'src/app/services/trace-service';
@@ -20,7 +20,7 @@ export class ProcessesComponent implements OnInit {
   });
 
   displayedColumns: string[] = ['pid', 'dump', 'gcdump', 'trace', 'more'];
-  processes: Process[];
+  processes: ProcessModel[];
 
   constructor(private configurationService: ConfigurationService,
               private processesService: ProcessesService,
