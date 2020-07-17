@@ -25,6 +25,7 @@
   </div>
   <div class="clear-float"></div>
 </div>
+
 <div [formGroup]="tableFiltersForm">
 
   <mat-form-field appearance="standard" floatLabel="always" class="display-columns-select">
@@ -57,6 +58,9 @@
     <mat-label>Search text</mat-label>
     <input matInput formControlName="searchText">
   </mat-form-field>
+
+  <button mat-button color="primary" (click)="downloadAllLogs()" [disabled]="form.disabled || this.jsonLogsDataSource.data.length === 0">Download all logs</button>
+  <button mat-button color="primary" (click)="downloadFilteredLogs()" [disabled]="form.disabled || this.jsonLogsDataSource.data.length === 0">Download filtered logs</button>
   <div class="table-container">
     <table mat-table [dataSource]="jsonLogsDataSource">
       <ng-container matColumnDef="LogLevel">

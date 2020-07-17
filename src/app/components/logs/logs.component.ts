@@ -153,4 +153,24 @@ export class LogsComponent implements OnInit {
 
     return out;
   }
+
+  downloadAllLogs(): void {
+    this.generateFile(this.jsonLogsDataSource.data, 'all-logs.json');
+  }
+
+  downloadFilteredLogs(): void {
+    this.generateFile(this.jsonLogsDataSource.filteredData, 'filtered-logs.json');
+  }
+
+  generateFile(data: LogModel[], filename: string): void {
+    const json = JSON.stringify(data);
+    const blob = new Blob([json], { type: 'application/json' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = filename;
+    link.click();
+
+    URL.revokeObjectURL(url);
+  }
 }
