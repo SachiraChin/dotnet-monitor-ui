@@ -1,3 +1,4 @@
+import { Input } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -7,14 +8,17 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./process.component.scss']
 })
 export class ProcessComponent implements OnInit {
-
+  @Input()
   pid: number;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router) { }
 
   ngOnInit(): void {
-    this.pid = +this.route.snapshot.paramMap.get('id');
+    if (!this.pid) {
+      this.pid = +this.route.snapshot.paramMap.get('id');
+    }
   }
 
 }

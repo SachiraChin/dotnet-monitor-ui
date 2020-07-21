@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ProcessModel } from 'src/app/models/process-model';
 import { ConfigurationService } from 'src/app/services/configuration-service';
 import { DumpService } from 'src/app/services/dump-service';
+import { GcDumpService } from 'src/app/services/gc-dump-service';
 import { TraceService } from 'src/app/services/trace-service';
 import { ProcessesService } from '../../services/processes-service';
 
@@ -14,24 +15,16 @@ import { ProcessesService } from '../../services/processes-service';
   styleUrls: ['./processes.component.scss']
 })
 export class ProcessesComponent implements OnInit {
-  form: FormGroup = new FormGroup({
-    restEndpointUrl: new FormControl(''),
-    metricsEndpointUrl: new FormControl(''),
-  });
-
   displayedColumns: string[] = ['pid', 'dump', 'gcdump', 'trace', 'more'];
+  @Input()
   processes: ProcessModel[];
 
-  constructor(private configurationService: ConfigurationService,
-              private processesService: ProcessesService,
-              private traceService: TraceService,
+  constructor(private traceService: TraceService,
               private router: Router,
-              private dumpService: DumpService) { }
+              private dumpService: DumpService,
+              private gcDumpService: GcDumpService) { }
 
   async ngOnInit(): Promise<void> {
-    this.form.get('restEndpointUrl').setValue(this.configurationService.getRestApiUrl());
-    this.form.get('metricsEndpointUrl').setValue(this.configurationService.getMetricsApiUrl());
-    this.processes = await this.processesService.getProcesses().toPromise();
   }
 
   downloadDump(pid: number): void {
@@ -39,7 +32,7 @@ export class ProcessesComponent implements OnInit {
   }
 
   downloadGcDump(pid: number): void {
-    window.open(`${this.configurationService.getRestApiUrl()}/gcdump/${pid}`, '_blank');
+    window.open(this.gcDumpService.getDownloadUrl(pid), '_blank');
   }
 
   downloadTrace(pid: number): void {
@@ -48,14 +41,5 @@ export class ProcessesComponent implements OnInit {
 
   manageApp(pid: number): void {
     this.router.navigate(['/processes', pid]);
-  }
-
-  saveApiUrls(): void {
-    this.configurationService.setRestApiUrl(this.form.get('restEndpointUrl').value);
-    this.configurationService.setMetricsApiUrl(this.form.get('metricsEndpointUrl').value);
-  }
-
-  async reloadProcesses(): Promise<void> {
-    this.processes = await this.processesService.getProcesses().toPromise();
   }
 }

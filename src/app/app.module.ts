@@ -23,6 +23,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LogsComponent } from './components/logs/logs.component';
 import { DumpComponent } from './components/dump/dump.component';
 import { GcDumpComponent } from './components/gc-dump/gc-dump.component';
+import { MonitorHomeComponent } from './components/monitor-home/monitor-home.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { GcDumpComponent } from './components/gc-dump/gc-dump.component';
     TracePostComponent,
     LogsComponent,
     DumpComponent,
-    GcDumpComponent
+    GcDumpComponent,
+    MonitorHomeComponent
   ],
   imports: [
     ReactiveFormsModule,
