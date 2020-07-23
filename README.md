@@ -1,7 +1,5 @@
 # dotnet-monitor UI
 
-<!-- dotnet exec "D:\dev\repos\dotnet-diagnostics\artifacts\bin\dotnet-monitor\Debug\netcoreapp2.1\dotnet-monitor.dll" collect --corsAllowedOrigins http://localhost:4200 -u http://localhost:59865 --metricUrls http://localhost:59866 -->
-
 This project is created as an easy to access user experience for `dotnet-monitor` tool which can be found [here](https://github.com/dotnet/diagnostics). If you haven't read original article about this, please read [this](https://devblogs.microsoft.com/dotnet/introducing-dotnet-monitor/) to get better understanding about features available in this tool.
 
 ## Updates
@@ -13,6 +11,7 @@ This project is created as an easy to access user experience for `dotnet-monitor
 - Updated how to run the project with the support to CORS rules in source repository. Details [here](#i-want-to-try-it-out).
 - Added better error handling for `trace` POST endpoint access.
 - Increased width of views so user has more visibility on content.
+- Added thanking note. Read [here](#thank-you).
 
 ## Features
 
@@ -119,15 +118,25 @@ You can follow below steps to run the application in your machine.
 4. Now set `src -> Microsoft.Diagnostics.Monitoring.RestServer -> Tools -> dotnet-monitor` as start up project
 5. Start debugging
 6. Clone this repository
-7. Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. 
+7. Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`.
 </strike>
 
 ## Further work
 
-This tool does not support `/metrics` endpoint available in `dotnet-monitor` tool. Next steps would be get integration for that.
+- **DONE!!** Added support for `/metrics` endpoint. ~~This tool does not support `/metrics` endpoint available in `dotnet-monitor` tool. Next steps would be get integration for that.~~
+- Add text stream support for `logs` endpoint.
+- Prepare POC for integrating UI to `dotnet-monitor` itself.
 
 ## Conclusion
 
 I thought this is a nice addition to awesome features provided in `dotnet-monitor`. You are open to check this out, make changes and ask me questions. Please note that effort I put here is nothing compared to original `dotnet-monitor` tool. If anything, because they implemented it so nicely that I was able to query and get results without having lots of troubles in my side.
 
 Thanks for checking out this tool!
+
+## Thank you
+
+Huge thanks goes to
+
+- [@shirhatti](https://github.com/shirhatti) for being so kind and giving answers for all questions I've asked.
+- [@wiktork](https://github.com/wiktork) for adding CORS feature to source repo. I would be stuck with my small *hacks* without that.
+- [@noahfalk](https://github.com/noahfalk), [@loic-sharma](https://github.com/loic-sharma), [@MaximRouiller](https://github.com/MaximRouiller) for kind words, it really encouraged me to keep pushing. 😊
