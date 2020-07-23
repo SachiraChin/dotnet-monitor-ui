@@ -11,6 +11,7 @@ This project is created as an easy to access user experience for `dotnet-monitor
 - Updated landing page UI to show full details of single app when API returns only one process.
 - Added UI for `/metrics` endpoint to show graph of returned metrics. Details [here](#metrics).
 - Updated how to run the project with the support to CORS rules in source repository. Details [here](#i-want-to-try-it-out).
+- Added better error handling for `trace` POST endpoint access.
 - Increased width of views so user has more visibility on content.
 
 ## Features

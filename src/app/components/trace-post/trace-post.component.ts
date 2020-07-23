@@ -5,6 +5,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { EventPipeProviderModel } from '../../models/event-pipe-provider-model';
 import { EventPipeConfigurationModel } from '../../models/event-pipe-configuration-model';
 import { TraceService } from 'src/app/services/trace-service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../dialog/dialog.component';
+import { DialogInputModel } from '../../models/dialog-input-model';
 
 @Component({
   selector: 'app-trace-post',
@@ -29,7 +32,7 @@ export class TracePostComponent implements OnInit {
 
   providersDataSource: MatTableDataSource<AbstractControl> = new MatTableDataSource<AbstractControl>(this.providers.controls);
 
-  constructor(private changeDetectorRefs: ChangeDetectorRef, private traceService: TraceService) { }
+  constructor(private changeDetectorRefs: ChangeDetectorRef, private traceService: TraceService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -71,16 +74,28 @@ export class TracePostComponent implements OnInit {
   }
 
   async download(): Promise<void> {
-    const model = new EventPipeConfigurationModel();
-    model.bufferSizeInMB = +this.form.get('bufferSizeInMB').value;
-    model.requestRundown = this.form.get('requestRundown').value;
-    model.providers = [];
-    for (const control of this.providers.controls) {
-      model.providers.push(this.getPipeProvider(control));
-    }
-
     this.form.disable();
-    await this.traceService.post(this.pid, +this.form.get('durationSeconds').value, model);
+    try {
+      const model = new EventPipeConfigurationModel();
+      model.bufferSizeInMB = +this.form.get('bufferSizeInMB').value;
+      model.requestRundown = this.form.get('requestRundown').value;
+      model.providers = [];
+      for (const control of this.providers.controls) {
+        model.providers.push(this.getPipeProvider(control));
+      }
+      await this.traceService.post(this.pid, +this.form.get('durationSeconds').value, model);
+
+    } catch (error) {
+      console.log(error);
+      const dialogInput = new DialogInputModel();
+      dialogInput.buttons = ['Ok'];
+      dialogInput.title = 'Error';
+      dialogInput.message = 'Error occurred while accessing trace (POST) endpoint. Please validate if all inputs are correct.';
+      const dialogRef = this.dialog.open(DialogComponent, {
+        width: '350px',
+        data: dialogInput
+      });
+    }
     this.form.enable();
   }
 }

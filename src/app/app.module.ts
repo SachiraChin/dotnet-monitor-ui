@@ -24,6 +24,8 @@ import { LogsComponent } from './components/logs/logs.component';
 import { DumpComponent } from './components/dump/dump.component';
 import { GcDumpComponent } from './components/gc-dump/gc-dump.component';
 import { MonitorHomeComponent } from './components/monitor-home/monitor-home.component';
+import { DialogComponent } from './components/dialog/dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { MonitorHomeComponent } from './components/monitor-home/monitor-home.com
     DumpComponent,
     GcDumpComponent,
     MonitorHomeComponent,
+    DialogComponent,
   ],
   imports: [
     ReactiveFormsModule,
@@ -56,6 +59,7 @@ import { MonitorHomeComponent } from './components/monitor-home/monitor-home.com
     MatCheckboxModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -43,13 +43,33 @@ export class TraceService {
   downLoadFile(data: HttpResponse<ArrayBuffer>, type: string): void {
     const contentDisposition = data.headers.get('Content-Disposition');
     const blob = new Blob([data.body], { type });
-    const filename = contentDisposition.split(';')[1].split('filename')[1].split('=')[1].trim();
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.href = url;
-    link.download = filename;
+    link.download = this.getFilename(contentDisposition);
     link.click();
 
     URL.revokeObjectURL(url);
+  }
+
+  getFilename(contentDisposition: string): string {
+    const staticFilename = 'trace-post-response.nettrace';
+    if (!contentDisposition || contentDisposition === '') {
+      return staticFilename;
+    }
+    const contentDispositionParts = contentDisposition.split(';');
+    if (contentDispositionParts.length < 2) {
+      return staticFilename;
+    }
+    const filenameSection = contentDispositionParts[1].split('filename');
+    if (filenameSection.length < 2) {
+      return staticFilename;
+    }
+    const filenameSectionParts = filenameSection[1].split('=');
+    if (filenameSectionParts.length < 2) {
+      return staticFilename;
+    }
+    const filename = filenameSectionParts[1].trim();
+    return filename;
   }
 }
