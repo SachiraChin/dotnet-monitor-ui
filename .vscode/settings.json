@@ -3,7 +3,10 @@
   "editor.insertSpaces": false,
 	"editor.tabSize": 2,
 	"cSpell.words": [
+		"appsettings",
+		"arraybuffer",
 		"gcdump",
-		"arraybuffer"
-	]
+		"microsoftaspnetcorehosting"
+	],
+  "javascript.implicitProjectConfig.experimentalDecorators": true
 }

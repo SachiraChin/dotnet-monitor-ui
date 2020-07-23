@@ -1,15 +1,11 @@
-<div class="process-container" [formGroup]="form">
-
+<div class="container" [formGroup]="form">
   <mat-form-field appearance="standard" floatLabel="always" class="rest-api-url-container">
-    <mat-label>REST API Url</mat-label>
-    <input matInput formControlName="restEndpointUrl">
+    <mat-label>Metrics API Url</mat-label>
+    <input matInput formControlName="metricsEndpointUrl">
   </mat-form-field>
   <div class="button-container">
     <button class="api-url-control-button" mat-raised-button (click)="saveApiUrls()">Save</button>
     <button class="api-url-control-button" mat-raised-button (click)="reloadProcesses()">Reload</button>
   </div>
-
-  <app-processes [processes]="processes" *ngIf="processes.length > 1"></app-processes>
-  <app-process [pid]="processes[0].pid" *ngIf="processes.length === 1"></app-process>
+  <app-metrics></app-metrics>
 </div>
-

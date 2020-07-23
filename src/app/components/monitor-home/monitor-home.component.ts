@@ -22,13 +22,11 @@ export class MonitorHomeComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.form.get('restEndpointUrl').setValue(this.configurationService.getRestApiUrl());
-    this.form.get('metricsEndpointUrl').setValue(this.configurationService.getMetricsApiUrl());
     this.processes = await this.processesService.getProcesses().toPromise();
   }
 
   saveApiUrls(): void {
     this.configurationService.setRestApiUrl(this.form.get('restEndpointUrl').value);
-    this.configurationService.setMetricsApiUrl(this.form.get('metricsEndpointUrl').value);
   }
 
   async reloadProcesses(): Promise<void> {

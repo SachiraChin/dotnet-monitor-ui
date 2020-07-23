@@ -1,0 +1,30 @@
+<div [formGroup]="form">
+  <mat-form-field appearance="standard" floatLabel="always">
+    <mat-label>Interval in seconds</mat-label>
+    <input matInput type="number" formControlName="intervalSeconds">
+  </mat-form-field>
+
+  <br>
+  <div>
+    <button class="spinner-container" mat-raised-button color="primary" (click)="start()" [disabled]="form.disabled">Start</button>
+    <button class="spinner-container" mat-raised-button color="warn" (click)="stop()" *ngIf="form.disabled">Stop</button>
+    <mat-spinner class="spinner-container" mode="indeterminate" diameter="35" *ngIf="form.disabled"></mat-spinner>
+  </div>
+
+  <div class="clear-float"></div>
+</div>
+<div [formGroup]="chartFiltersForm">
+  <mat-form-field class="metrics-list" appearance="standard" floatLabel="always">
+    <mat-label>Display graphs</mat-label>
+    <mat-select formControlName="displayGraphs" multiple>
+      <mat-option *ngFor="let e of metricsList" [value]="e.name">{{e.displayName}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div class="chart-container" *ngIf="lineChartData.length > 0">
+  <ng5-slider [(value)]="minSelected" [(highValue)]="maxSelected" [options]="sliderOptions" (userChangeEnd)="onSliderChange($event)"></ng5-slider>
+
+  <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels"
+    [options]="lineChartOptions" [legend]="true" [chartType]="'line'" [plugins]="lineChartPlugins"></canvas>
+</div>

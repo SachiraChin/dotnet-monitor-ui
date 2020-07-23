@@ -35,7 +35,7 @@ import { MonitorHomeComponent } from './components/monitor-home/monitor-home.com
     LogsComponent,
     DumpComponent,
     GcDumpComponent,
-    MonitorHomeComponent
+    MonitorHomeComponent,
   ],
   imports: [
     ReactiveFormsModule,

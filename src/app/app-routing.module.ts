@@ -8,6 +8,10 @@ const routes: Routes = [
   { path: '', pathMatch: 'full', component: MonitorHomeComponent },
   { path: 'processes', component: MonitorHomeComponent },
   { path: 'processes/:id', component: ProcessComponent },
+  {
+    path: 'metrics',
+    loadChildren: () => import('./metrics.module').then(m => m.MetricsModule)
+  },
 ];
 
 @NgModule({
