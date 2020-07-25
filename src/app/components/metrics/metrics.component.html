@@ -13,6 +13,9 @@
 
   <div class="clear-float"></div>
 </div>
+
+<mat-card class="warning-card" *ngIf="showNoMetricsWarning">Metrics endpoint did not return any results. Please make sure there's only one process available for 'dotnet-trace'.</mat-card>
+
 <div [formGroup]="chartFiltersForm">
   <mat-form-field class="metrics-list" appearance="standard" floatLabel="always">
     <mat-label>Display graphs</mat-label>
@@ -21,7 +24,6 @@
     </mat-select>
   </mat-form-field>
 </div>
-
 <div class="chart-container" *ngIf="lineChartData.length > 0">
   <ng5-slider [(value)]="minSelected" [(highValue)]="maxSelected" [options]="sliderOptions" (userChangeEnd)="onSliderChange($event)"></ng5-slider>
 

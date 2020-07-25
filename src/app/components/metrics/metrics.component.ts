@@ -103,6 +103,7 @@ export class MetricsComponent implements OnInit {
   availableTimestamps = [];
   isSliderMinIsMinTimestamp = true;
   isSliderMaxIsMaxTimestamp = true;
+  showNoMetricsWarning = false;
 
   constructor(private metricsService: MetricsService) {
     // BaseChartDirective.registerPlugin(colorSchemes);
@@ -153,6 +154,13 @@ export class MetricsComponent implements OnInit {
 
   async loadMetrics(): Promise<void> {
     const metrics = await this.metricsService.getMetrics();
+    if (Object.keys(metrics).length === 0) {
+      this.showNoMetricsWarning = true;
+      return;
+    } else {
+      this.showNoMetricsWarning = false;
+    }
+
     this.metricsList = Object.values(metrics).map(e => ({ name: e.metricName, displayName: e.metricDisplayName }));
     for (const metric of Object.values(metrics)) {
       if (!this.data[metric.metricName]) {
@@ -221,11 +229,11 @@ export class MetricsComponent implements OnInit {
     const timestampArrays = selectedMetrics.map(e => Object.keys(this.data[e].metricValues));
     const merged: number[] = [].concat.apply([], timestampArrays);
     const filtered = merged.filter((value: number, index: number, self: number[]) => value >= this.sliderOptions.floor
-                                                          && value <= this.sliderOptions.ceil
-                                                          && self.indexOf(value) === index
-                                                          );
+      && value <= this.sliderOptions.ceil
+      && self.indexOf(value) === index
+    );
     const newOptions: Options = Object.assign({}, this.sliderOptions);
-    newOptions.stepsArray = filtered.sort((a, b) => a - b).map(e => ({value: e}));
+    newOptions.stepsArray = filtered.sort((a, b) => a - b).map(e => ({ value: e }));
     this.sliderOptions = newOptions;
   }
 

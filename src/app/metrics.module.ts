@@ -11,6 +11,7 @@ import { MetricsHomeComponent } from './components/metrics-home/metrics-home.com
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { Ng5SliderModule } from 'ng5-slider';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   imports: [
@@ -25,6 +26,7 @@ import { Ng5SliderModule } from 'ng5-slider';
     MatInputModule,
     MatProgressSpinnerModule,
     MatSelectModule,
+    MatCardModule,
 
     ChartsModule,
     Ng5SliderModule,

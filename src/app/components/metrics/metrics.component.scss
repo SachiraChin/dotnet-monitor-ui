@@ -1,3 +1,5 @@
+@import '../../app-theme.scss';
+
 
 .chart-container {
   position: relative;
@@ -16,4 +18,13 @@
 
 .clear-float {
   clear: both;
+}
+
+.warning-card {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  background-color: mat-color($dotnet-monitor-ui-warn, default);
+  color: mat-color($dotnet-monitor-ui-warn, default-contrast);
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
