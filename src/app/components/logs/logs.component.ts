@@ -5,6 +5,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { LogModel } from 'src/app/models/log-model';
 import { LogsService } from '../../services/logs-service';
 import { debounceTime } from 'rxjs/operators';
+import { getTimestampBasedFilename } from '../../utilities/filename-extensions';
 
 class FilterModel {
   logLevels: string[];
@@ -19,8 +20,9 @@ class FilterModel {
   styleUrls: ['./logs.component.scss']
 })
 export class LogsComponent implements OnInit {
-  allDisplayedColumns: string[] = ['LogLevel', 'EventId', 'Category', 'Message', 'Scopes', 'Arguments'];
-  displayedColumns: string[] = this.allDisplayedColumns;
+  jsonStreamAvailableColumns: string[] = ['LogLevel', 'EventId', 'Category', 'Message', 'Scopes', 'Arguments'];
+  jsonStreamDisplayedColumns: string[] = this.jsonStreamAvailableColumns;
+  textStreamDisplayedColumns: string[] = ['Log'];
   logLevels: string[] = [];
   eventIds: string[] = [];
   categories: string[] = [];
@@ -28,9 +30,10 @@ export class LogsComponent implements OnInit {
   form: FormGroup = new FormGroup({
     durationSeconds: new FormControl(30),
     level: new FormControl(1),
+    streamType: new FormControl('json'),
   });
   tableFiltersForm: FormGroup = new FormGroup({
-    displayedColumns: new FormControl(this.displayedColumns),
+    displayedColumns: new FormControl(this.jsonStreamDisplayedColumns),
     logLevels: new FormControl([]),
     eventIds: new FormControl([]),
     categories: new FormControl([]),
@@ -42,12 +45,18 @@ export class LogsComponent implements OnInit {
   @Input()
   pid: number;
 
-  jsonLogs = new BehaviorSubject<LogModel[]>([]);
-  jsonLogsDataSource = new MatTableDataSource<LogModel>();
+  logs = new BehaviorSubject<LogModel[] | string[]>([]);
+  jsonStreamDataSource = new MatTableDataSource<LogModel>();
+  textStreamDataSource = new MatTableDataSource<string>();
   streamSubscription: Subscription;
 
+  get streamType(): string {
+    return this.form.get('streamType').value;
+  }
+
   constructor(private logsService: LogsService) {
-    this.logFilterPredicate = this.logFilterPredicate.bind(this);
+    this.jsonLogFilterPredicate = this.jsonLogFilterPredicate.bind(this);
+    this.textLogFilterPredicate = this.textLogFilterPredicate.bind(this);
   }
 
   ngOnInit(): void {
@@ -58,21 +67,22 @@ export class LogsComponent implements OnInit {
       searchText: undefined,
     };
 
-    this.jsonLogsDataSource.filterPredicate = this.logFilterPredicate;
+    this.jsonStreamDataSource.filterPredicate = this.jsonLogFilterPredicate;
+    this.textStreamDataSource.filterPredicate = this.textLogFilterPredicate;
     this.tableFiltersForm.get('displayedColumns').valueChanges.subscribe(val => {
-      this.displayedColumns = val;
+      this.jsonStreamDisplayedColumns = val;
     });
     this.tableFiltersForm.get('logLevels').valueChanges.subscribe((val: string[]) => {
       this.filterModel.logLevels = val;
-      this.jsonLogsDataSource.filter = JSON.stringify(this.filterModel);
+      this.jsonStreamDataSource.filter = JSON.stringify(this.filterModel);
     });
     this.tableFiltersForm.get('eventIds').valueChanges.subscribe((val: string[]) => {
       this.filterModel.eventIds = val;
-      this.jsonLogsDataSource.filter = JSON.stringify(this.filterModel);
+      this.jsonStreamDataSource.filter = JSON.stringify(this.filterModel);
     });
     this.tableFiltersForm.get('categories').valueChanges.subscribe((val: string[]) => {
       this.filterModel.categories = val;
-      this.jsonLogsDataSource.filter = JSON.stringify(this.filterModel);
+      this.jsonStreamDataSource.filter = JSON.stringify(this.filterModel);
     });
     this.tableFiltersForm.get('searchText').valueChanges
       .pipe(
@@ -80,11 +90,12 @@ export class LogsComponent implements OnInit {
       )
       .subscribe((val: string) => {
         this.filterModel.searchText = val;
-        this.jsonLogsDataSource.filter = JSON.stringify(this.filterModel);
+        this.jsonStreamDataSource.filter = JSON.stringify(this.filterModel);
+        this.textStreamDataSource.filter = JSON.stringify(this.filterModel);
       });
   }
 
-  logFilterPredicate(entry: LogModel, filter: string): boolean {
+  jsonLogFilterPredicate(entry: LogModel, filter: string): boolean {
     if (!filter) {
       return true;
     }
@@ -106,9 +117,26 @@ export class LogsComponent implements OnInit {
     return true;
   }
 
+  textLogFilterPredicate(entry: string, filter: string): boolean {
+    if (!filter) {
+      return true;
+    }
+
+    const filterModel = JSON.parse(filter) as FilterModel;
+    if (filterModel.searchText && filterModel.searchText.trim() !== '') {
+      return this.contains(entry, filterModel.searchText.toLowerCase());
+    }
+
+    return true;
+  }
+
   contains(entry: any, search: string): boolean {
     if (!entry) {
       return false;
+    }
+
+    if (typeof entry === 'string') {
+      return entry.toLowerCase().includes(search);
     }
 
     return Object.values(entry).some(e => typeof e === 'object' ?
@@ -119,20 +147,28 @@ export class LogsComponent implements OnInit {
 
   stream(): void {
     this.form.disable();
-    this.jsonLogs = new BehaviorSubject<LogModel[]>([]);
+    this.logs = new BehaviorSubject<LogModel[] | string[]>([]);
     this.logLevels = [];
     this.eventIds = [];
     this.categories = [];
-    this.jsonLogsDataSource.data = [];
+    this.jsonStreamDataSource.data = [];
+    this.textStreamDataSource.data = [];
+    const logLevel = +this.form.get('level').value;
+    const durationSeconds = +this.form.get('durationSeconds').value;
 
-    this.streamSubscription = this.logsService.getLogs(this.pid, +this.form.get('level').value, +this.form.get('durationSeconds').value)
+    this.streamSubscription = this.logsService.getLogs(this.pid, logLevel, durationSeconds, this.streamType)
       .subscribe(e => {
-        this.jsonLogs.next(e);
-        const values = this.jsonLogs.getValue();
-        this.logLevels = values.map(v => v.LogLevel).filter((value, index, self) => self.indexOf(value) === index);
-        this.eventIds = values.map(v => v.EventId).filter((value, index, self) => self.indexOf(value) === index);
-        this.categories = values.map(v => v.Category).filter((value, index, self) => self.indexOf(value) === index);
-        this.jsonLogsDataSource.data = values;
+        this.logs.next(e);
+        if (this.streamType === 'json') {
+          const values = this.logs.getValue() as LogModel[];
+          this.logLevels = values.map(v => v.LogLevel).filter((value, index, self) => self.indexOf(value) === index);
+          this.eventIds = values.map(v => v.EventId).filter((value, index, self) => self.indexOf(value) === index);
+          this.categories = values.map(v => v.Category).filter((value, index, self) => self.indexOf(value) === index);
+          this.jsonStreamDataSource.data = values;
+        } else if (this.streamType === 'text') {
+          const values = this.logs.getValue() as string[];
+          this.textStreamDataSource.data = values;
+        }
       }, (error) => {
         this.form.enable();
       }, () => {
@@ -155,16 +191,31 @@ export class LogsComponent implements OnInit {
   }
 
   downloadAllLogs(): void {
-    this.generateFile(this.jsonLogsDataSource.data, 'all-logs.json');
+    if (this.streamType === 'json') {
+      const json = JSON.stringify(this.jsonStreamDataSource.data);
+      const filename = getTimestampBasedFilename('.json', new Date(), this.pid.toString());
+      this.generateFile(json, filename, 'application/json');
+    } else if (this.streamType === 'text') {
+      const text = this.textStreamDataSource.data.join('\n\n');
+      const filename = getTimestampBasedFilename('.log', new Date(), this.pid.toString());
+      this.generateFile(text, filename, 'text/plain');
+    }
   }
 
   downloadFilteredLogs(): void {
-    this.generateFile(this.jsonLogsDataSource.filteredData, 'filtered-logs.json');
+    if (this.streamType === 'json') {
+      const json = JSON.stringify(this.jsonStreamDataSource.filteredData);
+      const filename = getTimestampBasedFilename('.json', new Date(), this.pid.toString());
+      this.generateFile(json, filename, 'application/json');
+    } else if (this.streamType === 'text') {
+      const text = this.textStreamDataSource.filteredData.join('\n\n');
+      const filename = getTimestampBasedFilename('.log', new Date(), this.pid.toString());
+      this.generateFile(text, filename, 'text/plain');
+    }
   }
 
-  generateFile(data: LogModel[], filename: string): void {
-    const json = JSON.stringify(data);
-    const blob = new Blob([json], { type: 'application/json' });
+  generateFile(content: string, filename: string, type: string): void {
+    const blob = new Blob([content], { type });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.href = url;

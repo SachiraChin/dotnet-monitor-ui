@@ -12,8 +12,8 @@ export class LogsService {
 
   }
 
-  getLogs(pid: number, level?: number, durationSeconds?: number): Observable<LogModel[]> {
-    const observable = new Observable<LogModel[]>((subscriber) => {
+  getLogs(pid: number, level?: number, durationSeconds?: number, requestType: string = 'json'): Observable<LogModel[] | string[]> {
+    const observable = new Observable<LogModel[] | string[]>((subscriber) => {
       const url = this.configurationService.getRestApiUrl();
       const params: string[] = [];
       if (durationSeconds) {
@@ -27,21 +27,29 @@ export class LogsService {
       const requestUrl = `${url}/logs/${pid}${(params.length > 0 ? '?' + params.join('&') : '')}`;
       const xhr = new XMLHttpRequest();
       xhr.open('GET', requestUrl, true);
-      xhr.setRequestHeader('Accept', 'application/x-ndjson');
+      xhr.setRequestHeader('Accept', requestType === 'json' ? 'application/x-ndjson' : 'text/event-stream');
       let lastIndex = 0;
       xhr.onprogress = (ev: ProgressEvent<EventTarget>) => {
-        const values = xhr.responseText.split('\n').filter(e => e && e !== '');
-        const newLogsJson = values.splice(lastIndex, values.length - lastIndex);
-        const newLogs = newLogsJson.map(e => {
-          try {
-            return JSON.parse(e);
-          } catch (error) {
-            console.log('JSON parse error', e, error);
-            return undefined;
-          }
-        }).filter(e => e);
-        subscriber.next(newLogs);
-        lastIndex = values.length;
+        if (requestType === 'json') {
+          const values = xhr.responseText.split('\n').filter(e => e && e !== '');
+          const newLogsJson = values.splice(lastIndex, values.length - lastIndex);
+          const newLogs = newLogsJson.map(e => {
+            try {
+              return JSON.parse(e);
+            } catch (error) {
+              console.log('JSON parse error', e, error);
+              return undefined;
+            }
+          }).filter(e => e);
+          subscriber.next(newLogs);
+          lastIndex = values.length;
+        } else if (requestType === 'text') {
+          const values = xhr.responseText.split('\n\n').filter(e => e && e !== '');
+          const newLogsText = values.splice(lastIndex, values.length - lastIndex);
+
+          subscriber.next(newLogsText);
+          lastIndex = values.length;
+        }
       };
       xhr.onreadystatechange = (e) => {
         if (xhr.readyState === 4) {

@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { EventPipeConfigurationModel } from '../models/event-pipe-configuration-model';
 import { EventPipeProviderModel } from '../models/event-pipe-provider-model';
 import { ConfigurationService } from './configuration-service';
+import { getTimestampBasedFilename } from '../utilities/filename-extensions';
 
 @Injectable({
   providedIn: 'root',
@@ -37,23 +38,23 @@ export class TraceService {
       responseType: 'arraybuffer',
       observe: 'response'
     }).toPromise();
-    this.downLoadFile(response, 'application/octet-stream');
+    this.downLoadFile(response, 'application/octet-stream', pid);
   }
 
-  downLoadFile(data: HttpResponse<ArrayBuffer>, type: string): void {
+  downLoadFile(data: HttpResponse<ArrayBuffer>, type: string, pid: number): void {
     const contentDisposition = data.headers.get('Content-Disposition');
     const blob = new Blob([data.body], { type });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.href = url;
-    link.download = this.getFilename(contentDisposition);
+    link.download = this.getFilename(contentDisposition, pid);
     link.click();
 
     URL.revokeObjectURL(url);
   }
 
-  getFilename(contentDisposition: string): string {
-    const staticFilename = 'trace-post-response.nettrace';
+  getFilename(contentDisposition: string, pid: number): string {
+    const staticFilename = getTimestampBasedFilename('.nettrace', new Date(), pid.toString());
     if (!contentDisposition || contentDisposition === '') {
       return staticFilename;
     }
