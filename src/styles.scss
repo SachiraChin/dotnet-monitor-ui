@@ -1,16 +1,8 @@
 @import './app/app-theme.scss';
+@import './app/app.component.scss';
+@import './app/components/metrics/metrics.component.scss';
 
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
 @include mat-core();
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include angular-material-theme($dotnet-monitor-ui-theme);
-
-/* You can add global styles to this file, and also import other style files */
 
 html,
 body {
@@ -20,4 +12,38 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.app-body {
+  position: absolute;
+  min-height: 100%;
+  width: 100%;
+}
+
+@mixin set-app-background($background-color) {
+
+  .app-body {
+    background-color: $background-color;
+  }
+}
+
+
+.dark-theme {
+  @include angular-material-theme($dark-theme);
+  @include set-app-toolbar($dark-theme);
+  @include set-app-background(mat-color(map-get($dark-theme, primary), 900));
+  @include set-warning-card-colors($dark-theme);
+
+
+  $foreground: map-get($dark-theme, foreground);
+  mat-form-field.mat-form-field input {
+    color: mat-color($foreground, text);
+  }
+}
+
+.light-theme {
+  @include angular-material-theme($light-theme);
+  @include set-app-toolbar($light-theme);
+  @include set-app-background(#ffffff);
+  @include set-warning-card-colors($light-theme);
 }

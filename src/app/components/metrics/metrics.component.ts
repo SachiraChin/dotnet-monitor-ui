@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ChartDataSets, ChartOptions } from 'chart.js';
-import { Label, Color, BaseChartDirective } from 'ng2-charts';
+import { Label, Color, BaseChartDirective, ThemeService as ChartThemeService } from 'ng2-charts';
 import { ChangeContext, Options, CustomStepDefinition } from 'ng5-slider';
 import { MetricModel } from 'src/app/models/metric-model';
 import { MetricsService } from 'src/app/services/metrics-service';
+import { ThemeService  } from '../../services/theme-service';
 
 @Component({
   selector: 'app-metrics',
@@ -105,7 +106,7 @@ export class MetricsComponent implements OnInit {
   isSliderMaxIsMaxTimestamp = true;
   showNoMetricsWarning = false;
 
-  constructor(private metricsService: MetricsService) {
+  constructor(private metricsService: MetricsService, private chartThemeService: ChartThemeService, private themeService: ThemeService) {
     // BaseChartDirective.registerPlugin(colorSchemes);
     this.loadMetrics = this.loadMetrics.bind(this);
   }
@@ -123,6 +124,9 @@ export class MetricsComponent implements OnInit {
       this.resetChart();
       this.updateGraphData();
     });
+    this.themeService.onThemeChange.subscribe((theme) => {
+      this.setChartTheme(theme);
+    });
   }
 
   async reload(): Promise<void> {
@@ -136,6 +140,30 @@ export class MetricsComponent implements OnInit {
     await this.loadMetrics();
     this.metricsLoadTimerPointer = setInterval(this.loadMetrics, +this.form.get('intervalSeconds').value * 1000);
     this.form.disable();
+  }
+
+  setChartTheme(value: string): void {
+    let overrides: ChartOptions;
+    if (value === 'dark') {
+      overrides = {
+        legend: {
+          labels: { fontColor: 'white' }
+        },
+        scales: {
+          xAxes: [{
+            ticks: { fontColor: 'white' },
+            gridLines: { color: 'rgba(255,255,255,0.1)' }
+          }],
+          yAxes: [{
+            ticks: { fontColor: 'white' },
+            gridLines: { color: 'rgba(255,255,255,0.1)' }
+          }]
+        }
+      };
+    } else {
+      overrides = {};
+    }
+    this.chartThemeService.setColorschemesOptions(overrides);
   }
 
   resetChart(): void {

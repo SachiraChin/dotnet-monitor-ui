@@ -5,23 +5,23 @@
   </ng-container>
   <ng-container matColumnDef="dump">
     <th class="center-text button-cell" mat-header-cell *matHeaderCellDef> dump </th>
-    <td class="center-text button-cell" mat-cell *matCellDef="let element"> <button mat-button color="primary"
+    <td class="center-text button-cell" mat-cell *matCellDef="let element"> <button mat-raised-button color="primary"
         (click)="downloadDump(element.pid)">Download</button> </td>
   </ng-container>
   <ng-container matColumnDef="gcdump">
     <th class="center-text button-cell" mat-header-cell *matHeaderCellDef> gcdump </th>
-    <td class="center-text button-cell" mat-cell *matCellDef="let element"> <button mat-button color="primary"
+    <td class="center-text button-cell" mat-cell *matCellDef="let element"> <button mat-raised-button color="primary"
         (click)="downloadGcDump(element.pid)">Download</button> </td>
   </ng-container>
   <ng-container matColumnDef="trace">
     <th class="center-text button-cell" mat-header-cell *matHeaderCellDef> trace </th>
-    <td class="center-text button-cell" mat-cell *matCellDef="let element"> <button mat-button color="primary"
+    <td class="center-text button-cell" mat-cell *matCellDef="let element"> <button mat-raised-button color="primary"
         (click)="downloadTrace(element.pid)">Download</button> </td>
   </ng-container>
   <ng-container matColumnDef="more">
     <th class="center-text button-cell" mat-header-cell *matHeaderCellDef> </th>
-    <td class="center-text button-cell" mat-cell *matCellDef="let element"> <button mat-button color="primary"
-        (click)="manageApp(element.pid)">More</button> </td>
+    <td class="center-text button-cell" mat-cell *matCellDef="let element"> <a mat-flat-button color="primary"
+      [routerLink]="['/processes/' + element.pid]">More</a> </td>
   </ng-container>
 
 

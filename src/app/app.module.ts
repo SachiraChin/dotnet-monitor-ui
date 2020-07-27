@@ -25,7 +25,8 @@ import { DumpComponent } from './components/dump/dump.component';
 import { GcDumpComponent } from './components/gc-dump/gc-dump.component';
 import { MonitorHomeComponent } from './components/monitor-home/monitor-home.component';
 import { DialogComponent } from './components/dialog/dialog.component';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatIconModule,
     MatProgressSpinnerModule,
     MatDialogModule,
+    MatMenuModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

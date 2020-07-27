@@ -1,14 +1,15 @@
-<style>
-</style>
-
-<!-- Toolbar -->
 <div class="toolbar" role="banner">
   <a href="/">
     <img width="40" alt=".NET Core Logo" src="assets/downloads-dot-net-core.svg" />
   </a>
-  <a href="/" class="nav-link"><span>Home</span></a>
-  <a href="/metrics" class="nav-link"><span>Metrics</span></a>
+  <a [routerLink]="['/']" class="nav-link"><span>Home</span></a>
+  <a [routerLink]="['/metrics']" class="nav-link"><span>Metrics</span></a>
   <div class="spacer"></div>
+  <button mat-button [matMenuTriggerFor]="menu">Theme</button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="setTheme('light')">Light</button>
+    <button mat-menu-item (click)="setTheme('dark')">Dark (Experimental)</button>
+  </mat-menu>
 </div>
 
 <div class="content" role="main">

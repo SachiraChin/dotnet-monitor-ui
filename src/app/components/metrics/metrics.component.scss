@@ -23,8 +23,15 @@
 .warning-card {
   margin-top: 10px;
   margin-bottom: 10px;
-  background-color: mat-color($dotnet-monitor-ui-warn, default);
-  color: mat-color($dotnet-monitor-ui-warn, default-contrast);
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+@mixin set-warning-card-colors($theme) {
+
+  $warn: map-get($theme, warn);
+  .warning-card {
+    background-color: mat-color($warn, default);
+    color: mat-color($warn, default-contrast);
+  }
 }

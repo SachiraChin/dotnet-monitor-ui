@@ -1,12 +1,28 @@
-@import './app-theme.scss';
-
 :host {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 14px;
-  // color: $dotnet-monitor-ui-accent;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+@mixin set-app-toolbar($theme) {
+
+  $primary: map-get($theme, primary);
+
+  .toolbar {
+    background-color: mat-color($primary, 600);
+  }
+
+  a,
+  a:visited,
+  a:hover {
+    color: mat-color($primary, default-contrast);
+  }
 }
 
 h1,
@@ -40,7 +56,6 @@ p {
   height: 60px;
   display: flex;
   align-items: center;
-  background-color: mat-color($dotnet-monitor-ui-primary);
   color: white;
   font-weight: 600;
 }
@@ -65,6 +80,7 @@ p {
   max-width: 80%;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
 svg.material-icons {
