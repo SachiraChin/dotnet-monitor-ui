@@ -5,10 +5,14 @@
     <input matInput formControlName="restEndpointUrl">
   </mat-form-field>
   <div class="button-container">
-    <button class="api-url-control-button" mat-raised-button (click)="saveApiUrls()">Save</button>
-    <button class="api-url-control-button" mat-raised-button (click)="reloadProcesses()">Reload</button>
+    <button class="spinner-container api-url-control-button" mat-raised-button [disabled]="form.disabled" (click)="saveApiUrls()">Save</button>
+    <button class="spinner-container api-url-control-button" mat-raised-button [disabled]="form.disabled" (click)="reloadProcesses()">Reload</button>
+    <mat-spinner class="spinner-container" mode="indeterminate" diameter="35" *ngIf="form.disabled"></mat-spinner>
   </div>
 
+  <div class="clear-float"></div>
+  <mat-card class="warning-card" *ngIf="accessFailed">REST endpoint access failed. Please check if REST API Url is correct.</mat-card>
+  <br />
   <app-processes [processes]="processes" *ngIf="processes.length > 1"></app-processes>
   <app-process [pid]="processes[0].pid" *ngIf="processes.length === 1"></app-process>
 </div>

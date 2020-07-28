@@ -107,6 +107,7 @@ export class MetricsComponent implements OnInit {
   isSliderMinIsMinTimestamp = true;
   isSliderMaxIsMaxTimestamp = true;
   showNoMetricsWarning = false;
+  metricsTrackerRunning = false;
 
   get downloadAvailable(): boolean {
     return Object.keys(this.data).length > 0;
@@ -118,7 +119,7 @@ export class MetricsComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.reload();
+    // await this.reload();
     this.chartFiltersForm.get('displayGraphs').valueChanges.subscribe(e => {
       this.resetChart();
       this.updateGraphData();
@@ -129,13 +130,22 @@ export class MetricsComponent implements OnInit {
   }
 
   async reload(): Promise<void> {
-    const metrics = await this.metricsService.getMetrics();
-    this.metricsList = Object.values(metrics).map(e => ({ name: e.metricName, displayName: e.metricDisplayName }));
-    if (this.metricsList.map(e => e.name).some(e => this.staticMetricsToBeSelected.includes(e))) {
-      this.chartFiltersForm.get('displayGraphs').setValue(this.staticMetricsToBeSelected);
-    } else {
-      const selectedMetrics = this.metricsList.slice(0, 6).map(e => e.name);
-      this.chartFiltersForm.get('displayGraphs').setValue(selectedMetrics);
+    try {
+      this.form.disable();
+      this.chartFiltersForm.disable();
+
+      const metrics = await this.metricsService.getMetrics();
+      this.metricsList = Object.values(metrics).map(e => ({ name: e.metricName, displayName: e.metricDisplayName }));
+      if (this.metricsList.map(e => e.name).some(e => this.staticMetricsToBeSelected.includes(e))) {
+        this.chartFiltersForm.get('displayGraphs').setValue(this.staticMetricsToBeSelected);
+      } else {
+        const selectedMetrics = this.metricsList.slice(0, 6).map(e => e.name);
+        this.chartFiltersForm.get('displayGraphs').setValue(selectedMetrics);
+      }
+      this.form.enable();
+      this.chartFiltersForm.enable();
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -143,7 +153,7 @@ export class MetricsComponent implements OnInit {
     this.resetChart();
     await this.loadMetrics();
     this.metricsLoadTimerPointer = setInterval(this.loadMetrics, +this.form.get('intervalSeconds').value * 1000);
-    this.form.disable();
+    this.metricsTrackerRunning = true;
   }
 
   setChartTheme(value: string): void {
@@ -180,7 +190,7 @@ export class MetricsComponent implements OnInit {
   stop(): void {
     if (this.metricsLoadTimerPointer) {
       clearInterval(this.metricsLoadTimerPointer);
-      this.form.enable();
+      this.metricsTrackerRunning = false;
     }
   }
 

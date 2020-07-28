@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ProcessModel } from 'src/app/models/process-model';
@@ -15,6 +16,7 @@ export class MonitorHomeComponent implements OnInit {
     metricsEndpointUrl: new FormControl(''),
   });
   processes: ProcessModel[] = [];
+  accessFailed = false;
 
   constructor(
     private configurationService: ConfigurationService,
@@ -22,7 +24,7 @@ export class MonitorHomeComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.form.get('restEndpointUrl').setValue(this.configurationService.getRestApiUrl());
-    this.processes = await this.processesService.getProcesses().toPromise();
+    this.reloadProcesses();
   }
 
   saveApiUrls(): void {
@@ -30,7 +32,16 @@ export class MonitorHomeComponent implements OnInit {
   }
 
   async reloadProcesses(): Promise<void> {
-    this.processes = await this.processesService.getProcesses().toPromise();
+    try {
+      this.accessFailed = false;
+      this.form.disable();
+      this.processes = await this.processesService.getProcesses().toPromise();
+      this.accessFailed = false;
+    } catch (error) {
+      this.accessFailed = true;
+    }
+
+    this.form.enable();
   }
 
 }

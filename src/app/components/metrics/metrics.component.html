@@ -7,8 +7,8 @@
   <br>
   <div>
     <button class="spinner-container" mat-raised-button color="primary" (click)="start()" [disabled]="form.disabled">Start</button>
-    <button class="spinner-container" mat-raised-button color="warn" (click)="stop()" *ngIf="form.disabled">Stop</button>
-    <mat-spinner class="spinner-container" mode="indeterminate" diameter="35" *ngIf="form.disabled"></mat-spinner>
+    <button class="spinner-container" mat-raised-button color="warn" (click)="stop()" *ngIf="metricsTrackerRunning">Stop</button>
+    <mat-spinner class="spinner-container" mode="indeterminate" diameter="35" *ngIf="metricsTrackerRunning"></mat-spinner>
   </div>
 
   <div class="clear-float"></div>
@@ -19,7 +19,7 @@
 <div [formGroup]="chartFiltersForm">
   <mat-form-field class="metrics-list" appearance="standard" floatLabel="always">
     <mat-label>Display graphs</mat-label>
-    <mat-select formControlName="displayGraphs" multiple>
+    <mat-select formControlName="displayGraphs" multiple [disabled]="form.disabled">
       <mat-option *ngFor="let e of metricsList" [value]="e.name">{{e.displayName}}</mat-option>
     </mat-select>
   </mat-form-field>

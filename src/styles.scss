@@ -39,6 +39,13 @@ body {
   mat-form-field.mat-form-field input {
     color: mat-color($foreground, text);
   }
+
+  $warn: map-get($dark-theme, warn);
+  .warning-card {
+    background-color: mat-color($warn, default);
+    color: mat-color($warn, default-contrast);
+  }
+
 }
 
 .light-theme {
@@ -50,5 +57,11 @@ body {
   $foreground: map-get($light-theme, foreground);
   mat-form-field.mat-form-field input {
     color: mat-color($foreground, text);
+  }
+
+  $warn: map-get($light-theme, warn);
+  .warning-card {
+    background-color: mat-color($warn, default);
+    color: mat-color($warn, default-contrast);
   }
 }
