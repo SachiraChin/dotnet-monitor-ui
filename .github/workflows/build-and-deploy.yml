@@ -30,11 +30,11 @@ jobs:
 
       - name: Build project 🔧
         run: |
-          ng build --prod
+          ng build --prod --sourceMap=false
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@3.5.9
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: build/dotnet-monitor-ui
+          FOLDER: dist/dotnet-monitor-ui
