@@ -27,13 +27,13 @@ body {
   }
 }
 
+@include angular-material-theme($light-theme);
 
 .dark-theme {
-  @include angular-material-theme($dark-theme);
+  @include angular-material-color($dark-theme);
   @include set-app-toolbar($dark-theme);
   @include set-app-background(mat-color(map-get($dark-theme, primary), 900));
   @include set-warning-card-colors($dark-theme);
-
 
   $foreground: map-get($dark-theme, foreground);
   mat-form-field.mat-form-field input {
@@ -42,8 +42,13 @@ body {
 }
 
 .light-theme {
-  @include angular-material-theme($light-theme);
+  // @include angular-material-color($light-theme);
   @include set-app-toolbar($light-theme);
   @include set-app-background(#ffffff);
   @include set-warning-card-colors($light-theme);
+
+  $foreground: map-get($light-theme, foreground);
+  mat-form-field.mat-form-field input {
+    color: mat-color($foreground, text);
+  }
 }

@@ -13,6 +13,39 @@ This project is created as an easy to access user experience for `dotnet-monitor
 - Increased width of views so user has more visibility on content.
 - Added thanking note. Read [here](#thank-you).
 
+### 2020-07-27
+
+- Added `text/event-stream` support for `/logs` endpoint.
+- Added dark theme (experimental).
+- Improvements for `/metrics` endpoint access.
+- Demo app is now available for use: [https://dotnet-monitor-ui.dev/](https://dotnet-monitor-ui.dev/)
+
+## Demo
+
+Now you can use the latest version of `dotnet-monitor ui` online from [https://dotnet-monitor-ui.dev/](https://dotnet-monitor-ui.dev/). Please follow below instruction to use this site to access `dotnet-monitor` endpoints accessible to your machine. For now, you have to build the solution from the repo to make it work with UI. More details why can be found [here](#i-want-to-build-it).
+
+1. Clone official `dotnet diagnostics` repository from this url. [https://github.com/dotnet/diagnostics](https://github.com/dotnet/diagnostics)
+2. Navigate to `\src\Tools\dotnet-monitor` from your favorite command line tool.
+3. Run `dotnet build`
+4. Open `\artifacts\bin\dotnet-monitor\Debug\netcoreapp2.1\appsettings.json` and add below section to the end.
+
+```json
+  "CorsConfiguration": {
+    "AllowedOrigins": "https://dotnet-monitor-ui.dev"
+  }
+```
+
+5. Goto `\artifacts\bin\dotnet-monitor\Debug\netcoreapp2.1\` using command line tool said above.
+6. Run `dotnet exec dotnet-monitor.dll collect`
+7. Now you can goto [https://dotnet-monitor-ui.dev/](https://dotnet-monitor-ui.dev/) and enjoy full experience of `dotnet-monitor`
+
+---
+**NOTE**
+
+[https://dotnet-monitor-ui.dev/](https://dotnet-monitor-ui.dev/) does not collect any details from your browser nor collect any response received from `dotnet-monitor` tool. It does not have tracking integrated and does not contain any library or tool to collect your personal information. Site hosted here is pure build from the code you can find in this repository.
+
+---
+
 ## Features
 
 In the landing page, user can setup endpoints of the `dotnet-monitor` tool and after clicking `Reload` (application will try to access default endpoint urls on load and show processes if it's available), all available processes from `dotnet-monitor` will be shown in list like this. In the list, user can use `Download` button to download dumps, gcdumps or traces with default parameters. But if user wants to fine-tune input for each endpoint, user can click `More` button to goto process page.
@@ -71,11 +104,13 @@ More info: [https://devblogs.microsoft.com/dotnet/introducing-dotnet-monitor/#me
 
 ![Metrics UI](documentation/images/metrics.png?raw=true "Metrics UI")
 
-## I want to try it out
+## I want to build it
 
 With quick response for my [issue](https://github.com/dotnet/diagnostics/issues/1346), now we have support for CORS rules within `dotnet-monitor`. Thank you [@wiktork](https://github.com/wiktork) for quick turnaround for this! 😊
 
 Until we see this in next release build, you still have to checkout the repo and build the `dotnet-monitor`. Once I have details of the build, I will update it here. Until that, please check below steps to run the latest build.
+
+### Visual Studio 2019
 
 1. Clone official `dotnet diagnostics` repository from this url. [https://github.com/dotnet/diagnostics](https://github.com/dotnet/diagnostics)
 2. Open the solution(`diagnostics.sln`) in Visual Studio and navigate to `src -> Microsoft.Diagnostics.Monitoring.RestServer -> appsettings.json`
@@ -92,39 +127,28 @@ Until we see this in next release build, you still have to checkout the repo and
 6. Clone this repository
 7. Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`.
 
-<strike>
-Well, I want to say it is easy-peasy to see this in action, but unfortunately you have to go through bit of trouble to get it up and running at the moment.
+### Command-line
 
-Current `dotnet-monitor` tool does not support CORS rules to be added to it's REST server. Because of this, client side app like this cannot send direct queries to the REST endpoints without having few changes in the app itself. I have discussed this in detail in [this issue](https://github.com/dotnet/diagnostics/issues/1346) in the original repository.
-
-You can follow below steps to run the application in your machine.
-
-1. Clone repository I mentioned in above ticket locally which has support to CORS rules. [https://github.com/SachiraChin/diagnostics/](https://github.com/SachiraChin/diagnostics/)
-2. Open the solution(`diagnostics.sln`) in Visual Studio and navigate to `src -> Microsoft.Diagnostics.Monitoring.RestServer -> appsettings.json`
-3. Add below section to it.
+1. Clone official `dotnet diagnostics` repository from this url. [https://github.com/dotnet/diagnostics](https://github.com/dotnet/diagnostics)
+2. Navigate to `\src\Tools\dotnet-monitor` from your favorite command line tool.
+3. Run `dotnet build`
+4. Open `\artifacts\bin\dotnet-monitor\Debug\netcoreapp2.1\appsettings.json` and add below section to the end.
 
 ```json
-  "CorsPolicy": {
-    "IsOriginAllowed": null,
-    "ExposedHeaders": [ "*" ],
-    "Headers": [ "*" ],
-    "Methods": [ "*" ],
-    "Origins": [ "http://localhost:4200/" ],
-    "PreflightMaxAge": null,
-    "SupportsCredentials": false
+  "CorsConfiguration": {
+     "AllowedOrigins": "http://localhost:4200"
   }
 ```
 
-4. Now set `src -> Microsoft.Diagnostics.Monitoring.RestServer -> Tools -> dotnet-monitor` as start up project
-5. Start debugging
-6. Clone this repository
-7. Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`.
-</strike>
+5. Goto `\artifacts\bin\dotnet-monitor\Debug\netcoreapp2.1\` using command line tool said above.
+6. Run `dotnet exec dotnet-monitor.dll collect`
+7. Clone this repository
+8. Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`.
 
 ## Further work
 
 - **DONE!!** Added support for `/metrics` endpoint. ~~This tool does not support `/metrics` endpoint available in `dotnet-monitor` tool. Next steps would be get integration for that.~~
-- Add text stream support for `logs` endpoint.
+- **DONE!!** Added text stream support for `logs` endpoint.
 - Prepare POC for integrating UI to `dotnet-monitor` itself.
 
 ## Conclusion
