@@ -31,7 +31,7 @@ export class ConfigurationService {
     let url = localStorage.getItem('MetricsApiUrl');
     if (!url) {
       url = this.defaultMetricsApiUrl;
-      this.setRestApiUrl(url);
+      this.setMetricsApiUrl(url);
     }
 
     return url;
