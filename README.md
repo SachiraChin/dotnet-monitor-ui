@@ -20,6 +20,11 @@ This project is created as an easy to access user experience for `dotnet-monitor
 - Improvements for `/metrics` endpoint access.
 - Demo app is now available for use: [https://dotnet-monitor-ui.dev/](https://dotnet-monitor-ui.dev/)
 
+### 2020-07-28
+
+- Metrics download options added.
+- Loading animation and error message banner added for API URL reload events.
+
 ## Demo
 
 Now you can use the latest version of `dotnet-monitor ui` online from [https://dotnet-monitor-ui.dev/](https://dotnet-monitor-ui.dev/). Please follow below instruction to use this site to access `dotnet-monitor` endpoints accessible to your machine. For now, you have to build the solution from the repo to make it work with UI. More details why can be found [here](#i-want-to-build-it).
