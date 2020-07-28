@@ -5,7 +5,9 @@ import { Label, Color, BaseChartDirective, ThemeService as ChartThemeService } f
 import { ChangeContext, Options, CustomStepDefinition } from 'ng5-slider';
 import { MetricModel } from 'src/app/models/metric-model';
 import { MetricsService } from 'src/app/services/metrics-service';
-import { ThemeService  } from '../../services/theme-service';
+import { getTimestampBasedFilename } from 'src/app/utilities/filename-extensions';
+import { ThemeService } from '../../services/theme-service';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-metrics',
@@ -106,20 +108,17 @@ export class MetricsComponent implements OnInit {
   isSliderMaxIsMaxTimestamp = true;
   showNoMetricsWarning = false;
 
+  get downloadAvailable(): boolean {
+    return Object.keys(this.data).length > 0;
+  }
+
   constructor(private metricsService: MetricsService, private chartThemeService: ChartThemeService, private themeService: ThemeService) {
     // BaseChartDirective.registerPlugin(colorSchemes);
     this.loadMetrics = this.loadMetrics.bind(this);
   }
 
   async ngOnInit(): Promise<void> {
-    const metrics = await this.metricsService.getMetrics();
-    this.metricsList = Object.values(metrics).map(e => ({ name: e.metricName, displayName: e.metricDisplayName }));
-    if (this.metricsList.map(e => e.name).some(e => this.staticMetricsToBeSelected.includes(e))) {
-      this.chartFiltersForm.get('displayGraphs').setValue(this.staticMetricsToBeSelected);
-    } else {
-      const selectedMetrics = this.metricsList.slice(0, 6).map(e => e.name);
-      this.chartFiltersForm.get('displayGraphs').setValue(selectedMetrics);
-    }
+    await this.reload();
     this.chartFiltersForm.get('displayGraphs').valueChanges.subscribe(e => {
       this.resetChart();
       this.updateGraphData();
@@ -132,10 +131,15 @@ export class MetricsComponent implements OnInit {
   async reload(): Promise<void> {
     const metrics = await this.metricsService.getMetrics();
     this.metricsList = Object.values(metrics).map(e => ({ name: e.metricName, displayName: e.metricDisplayName }));
+    if (this.metricsList.map(e => e.name).some(e => this.staticMetricsToBeSelected.includes(e))) {
+      this.chartFiltersForm.get('displayGraphs').setValue(this.staticMetricsToBeSelected);
+    } else {
+      const selectedMetrics = this.metricsList.slice(0, 6).map(e => e.name);
+      this.chartFiltersForm.get('displayGraphs').setValue(selectedMetrics);
+    }
   }
 
   async start(): Promise<void> {
-    // this.data = {};
     this.resetChart();
     await this.loadMetrics();
     this.metricsLoadTimerPointer = setInterval(this.loadMetrics, +this.form.get('intervalSeconds').value * 1000);
@@ -206,15 +210,17 @@ export class MetricsComponent implements OnInit {
       const currentMetric = this.data[metric.metricName];
       for (const metricValue of Object.values(metric.metricValues)) {
         const timestamp = metricValue.timestampReceivedInSeconds;
-        currentMetric.metricValues[timestamp] = metricValue;
-        currentMetric.runningAverage =
-          (currentMetric.runningAverage * currentMetric.metricCount + metricValue.value) / (currentMetric.metricCount + 1);
-        currentMetric.metricCount++;
-        if (currentMetric.maxTimestamp < timestamp) {
-          currentMetric.maxTimestamp = timestamp;
-        }
-        if (currentMetric.minTimestamp === 0 || currentMetric.minTimestamp > timestamp) {
-          currentMetric.minTimestamp = timestamp;
+        if (!currentMetric.metricValues[timestamp]) {
+          currentMetric.metricValues[timestamp] = metricValue;
+          currentMetric.runningAverage =
+            (currentMetric.runningAverage * currentMetric.metricCount + metricValue.value) / (currentMetric.metricCount + 1);
+          currentMetric.metricCount++;
+          if (currentMetric.maxTimestamp < timestamp) {
+            currentMetric.maxTimestamp = timestamp;
+          }
+          if (currentMetric.minTimestamp === 0 || currentMetric.minTimestamp > timestamp) {
+            currentMetric.minTimestamp = timestamp;
+          }
         }
       }
     }
@@ -334,5 +340,50 @@ export class MetricsComponent implements OnInit {
     }
     // console.log(averages);
     // this.lineChartLabels = this.lineChartData[0].data.map((value) => value.toString());
+  }
+
+  downloadLogs(allMetrics: boolean, fullTimeline: boolean): void {
+    const metricNames = allMetrics ? this.metricsList.map(e => e.name) : this.chartFiltersForm.get('displayGraphs').value as string[];
+    let output = '';
+    for (const metricName of metricNames) {
+      const metric = this.data[metricName];
+      output += `# HELP ${metricName} ${metric.metricDisplayName}\n`;
+      output += `# TYPE ${metricName} ${metric.metricType}\n`;
+      const valueKeys = (fullTimeline ?
+        Object.keys(metric.metricValues) :
+        Object.keys(metric.metricValues).filter(e => +e >= this.minSelected && +e <= this.maxSelected)
+      )
+        .sort((a, b) => +a - +b)
+        .map(e => +e);
+
+      for (const metricValueKey of valueKeys) {
+        const metricValue = metric.metricValues[metricValueKey];
+        output += `${metricName} ${metricValue.value} ${metricValue.timestampReceived}\n`;
+      }
+    }
+
+    this.generateFile(output, getTimestampBasedFilename('.txt', new Date()), 'text/plain');
+  }
+
+  downloadChart(): void {
+    const backgroundColor = getComputedStyle(document.querySelector('.app-body')).backgroundColor;
+    const canvas = document.getElementById('metrics-chart-js-canvas') as HTMLCanvasElement;
+    const imgData = canvas.toDataURL('image/png', 1.0);
+    const pdf = new jsPDF('l', 'pt', [canvas.width, canvas.height]);
+    pdf.setFillColor(backgroundColor);
+    pdf.rect(0, 0, canvas.width, canvas.height, 'F');
+    pdf.addImage(imgData, 'PNG', 0, 0);
+    pdf.save(getTimestampBasedFilename('.pdf', new Date()));
+  }
+
+  generateFile(content: string, filename: string, type: string): void {
+    const blob = new Blob([content], { type });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = filename;
+    link.click();
+
+    URL.revokeObjectURL(url);
   }
 }

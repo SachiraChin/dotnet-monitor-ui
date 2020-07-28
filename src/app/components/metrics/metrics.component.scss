@@ -5,6 +5,7 @@
   position: relative;
   height: 400px;
   width: 100%;
+  margin-top: 10px;
 }
 
 .metrics-list {
@@ -27,11 +28,20 @@
   padding-bottom: 10px;
 }
 
-@mixin set-warning-card-colors($theme) {
+.margin-right-10 {
+  margin-right: 10px;
+}
 
+@mixin set-warning-card-colors($theme) {
   $warn: map-get($theme, warn);
   .warning-card {
     background-color: mat-color($warn, default);
     color: mat-color($warn, default-contrast);
+  }
+
+  $foreground: map-get($theme, foreground);
+  .ng5-slider .ng5-slider-bubble {
+    color: mat-color($foreground, text) !important;
+    margin-bottom: 5px;
   }
 }

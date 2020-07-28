@@ -12,6 +12,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { Ng5SliderModule } from 'ng5-slider';
 import { MatCardModule } from '@angular/material/card';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   imports: [
@@ -27,6 +29,8 @@ import { MatCardModule } from '@angular/material/card';
     MatProgressSpinnerModule,
     MatSelectModule,
     MatCardModule,
+    MatMenuModule,
+    MatTooltipModule,
 
     ChartsModule,
     Ng5SliderModule,

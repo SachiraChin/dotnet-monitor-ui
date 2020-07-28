@@ -23,10 +23,22 @@
       <mat-option *ngFor="let e of metricsList" [value]="e.name">{{e.displayName}}</mat-option>
     </mat-select>
   </mat-form-field>
+  <br />
+  <button mat-stroked-button class="margin-right-10" color="primary" [disabled]="form.disabled || !downloadAvailable" [matMenuTriggerFor]="downloadAllMenu" matTooltip="Downloads in prometheus exposition format">Download all metrics</button>
+  <mat-menu #downloadAllMenu="matMenu">
+    <button mat-menu-item (click)="downloadLogs(true, false)">Selected time range</button>
+    <button mat-menu-item (click)="downloadLogs(true, true)">Full time range</button>
+  </mat-menu>
+  <button mat-stroked-button class="margin-right-10" color="primary" [disabled]="form.disabled || !downloadAvailable" [matMenuTriggerFor]="downloadSelectedMenu" matTooltip="Downloads in prometheus exposition format">Download selected metrics</button>
+  <mat-menu #downloadSelectedMenu="matMenu">
+    <button mat-menu-item (click)="downloadLogs(false, false)">Selected time range</button>
+    <button mat-menu-item (click)="downloadLogs(true, true)">Full time range</button>
+  </mat-menu>
+  <button mat-stroked-button class="margin-right-10" color="primary" [disabled]="form.disabled || !downloadAvailable" (click)="downloadChart()">Download chart</button>
 </div>
 <div class="chart-container" *ngIf="lineChartData.length > 0">
   <ng5-slider [(value)]="minSelected" [(highValue)]="maxSelected" [options]="sliderOptions" (userChangeEnd)="onSliderChange($event)"></ng5-slider>
 
-  <canvas baseChart [datasets]="lineChartData" [labels]="lineChartLabels"
+  <canvas id="metrics-chart-js-canvas" baseChart [datasets]="lineChartData" [labels]="lineChartLabels"
     [options]="lineChartOptions" [legend]="true" [chartType]="'line'" [plugins]="lineChartPlugins"></canvas>
 </div>
