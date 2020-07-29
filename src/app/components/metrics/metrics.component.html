@@ -19,7 +19,7 @@
 <div [formGroup]="chartFiltersForm">
   <mat-form-field class="metrics-list" appearance="standard" floatLabel="always">
     <mat-label>Display graphs</mat-label>
-    <mat-select formControlName="displayGraphs" multiple [disabled]="form.disabled">
+    <mat-select formControlName="displayGraphs" multiple>
       <mat-option *ngFor="let e of metricsList" [value]="e.name">{{e.displayName}}</mat-option>
     </mat-select>
   </mat-form-field>
