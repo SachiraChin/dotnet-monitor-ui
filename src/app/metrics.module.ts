@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MetricsHomeComponent } from './components/metrics-home/metrics-home.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { Ng5SliderModule } from 'ng5-slider';
+import { NgxSliderModule } from '@m0t0r/ngx-slider';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -33,7 +33,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatTooltipModule,
 
     ChartsModule,
-    Ng5SliderModule,
+    NgxSliderModule,
   ],
   declarations: [
     MetricsComponent,

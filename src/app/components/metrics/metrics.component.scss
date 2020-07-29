@@ -34,7 +34,7 @@
 
 @mixin set-warning-card-colors($theme) {
   $foreground: map-get($theme, foreground);
-  .ng5-slider .ng5-slider-bubble {
+  .ngx-slider .ngx-slider-bubble {
     color: mat-color($foreground, text) !important;
     margin-bottom: 5px;
   }

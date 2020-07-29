@@ -21,10 +21,10 @@
     "@angular/platform-browser": "~10.0.3",
     "@angular/platform-browser-dynamic": "~10.0.3",
     "@angular/router": "~10.0.3",
+    "@m0t0r/ngx-slider": "^1.0.0",
     "chart.js": "^2.9.3",
     "jspdf": "^1.5.3",
     "ng2-charts": "^2.2.4",
-    "ng5-slider": "^1.2.4",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"

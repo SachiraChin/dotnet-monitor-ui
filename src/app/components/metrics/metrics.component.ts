@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ChartDataSets, ChartOptions } from 'chart.js';
-import { Label, Color, BaseChartDirective, ThemeService as ChartThemeService } from 'ng2-charts';
-import { ChangeContext, Options, CustomStepDefinition } from 'ng5-slider';
+import { ThemeService as ChartThemeService } from 'ng2-charts';
+import { Options } from '@m0t0r/ngx-slider';
 import { MetricModel } from 'src/app/models/metric-model';
 import { MetricsService } from 'src/app/services/metrics-service';
 import { getTimestampBasedFilename } from 'src/app/utilities/filename-extensions';
@@ -120,7 +120,7 @@ export class MetricsComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     // await this.reload();
-    this.chartFiltersForm.get('displayGraphs').valueChanges.subscribe(e => {
+    this.chartFiltersForm.get('displayGraphs').valueChanges.subscribe(() => {
       this.resetChart();
       this.updateGraphData();
     });
@@ -240,7 +240,7 @@ export class MetricsComponent implements OnInit {
     this.updateGraphData();
   }
 
-  onSliderChange(changeContext: ChangeContext): void {
+  onSliderChange(): void {
     this.isSliderMinIsMinTimestamp = this.sliderOptions.floor === +this.minSelected;
     this.isSliderMaxIsMaxTimestamp = this.sliderOptions.ceil === +this.maxSelected;
     this.resetChart();
