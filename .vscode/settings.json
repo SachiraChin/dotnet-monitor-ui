@@ -5,8 +5,11 @@
 	"cSpell.words": [
 		"appsettings",
 		"arraybuffer",
+		"devkit",
 		"gcdump",
-		"microsoftaspnetcorehosting"
+		"htaccess",
+		"microsoftaspnetcorehosting",
+		"webapps"
 	],
   "javascript.implicitProjectConfig.experimentalDecorators": true
 }
