@@ -17,6 +17,11 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+               "lodash",
+               "chart.js",
+               "jspdf"
+            ],
             "outputPath": "dist/dotnet-monitor-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
