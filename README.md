@@ -1,5 +1,7 @@
 # dotnet-monitor UI
 
+![dotnet-monitor UI build and deploy to Azure Web App](https://github.com/SachiraChin/dotnet-monitor-ui/workflows/dotnet-monitor%20UI%20build%20and%20deploy%20to%20Azure%20Web%20App/badge.svg)
+
 This project is created as an easy to access user experience for `dotnet-monitor` tool which can be found [here](https://github.com/dotnet/diagnostics). If you haven't read original article about this, please read [this](https://devblogs.microsoft.com/dotnet/introducing-dotnet-monitor/) to get better understanding about features available in this tool.
 
 ## Updates
